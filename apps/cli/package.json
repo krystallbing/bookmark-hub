@@ -1,0 +1,23 @@
+{
+  "name": "@bookmark-hub/cli",
+  "version": "2026.9.1",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "bookmark-hub": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@bookmark-hub/shared": "*",
+    "@bookmark-hub/db": "*",
+    "@bookmark-hub/core": "*",
+    "@bookmark-hub/ai": "*",
+    "@bookmark-hub/indexer": "*",
+    "commander": "^12.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.1.1"
+  }
+}

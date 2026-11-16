@@ -1,0 +1,21 @@
+{
+  "name": "@bookmark-hub/mcp-server",
+  "version": "2026.9.1",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "bookmark-hub-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@bookmark-hub/shared": "*",
+    "@bookmark-hub/db": "*",
+    "@bookmark-hub/core": "*",
+    "@bookmark-hub/ai": "*",
+    "@bookmark-hub/indexer": "*",
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  }
+}

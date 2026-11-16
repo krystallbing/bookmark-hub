@@ -1,0 +1,31 @@
+node_modules/
+dist/
+.next/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+.env
+.env.local
+.env.*
+!.env.example
+.DS_Store
+*.log
+*.tsbuildinfo
+coverage/
+.turbo/
+
+# Everything under _local is personal reference material, generated output,
+# source assets, or launch shortcuts. It must not be uploaded.
+/_local/
+
+# Internal development comparison report (keep local only)
+docs/BOOKMARKHUB_DIFF.md

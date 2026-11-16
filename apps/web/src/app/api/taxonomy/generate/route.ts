@@ -1,0 +1,48 @@
+import { NextResponse } from 'next/server';
+import { getDB } from '@/lib/db';
+import { getAIProvider } from '@/lib/ai';
+import { generateTaxonomy, MockProviderNotAllowedError } from '@bookmark-hub/ai';
+import { DEFAULT_SETTINGS } from '@bookmark-hub/shared';
+
+const SETTING_KEY = 'bookmarkTaxonomy';
+
+function clampTopLevelFolderLimit(value: number): number {
+  return Number.isFinite(value)
+    ? Math.min(Math.max(Math.round(value), 3), 50)
+    : DEFAULT_SETTINGS.topLevelFolderLimit;
+}
+
+export async function POST() {
+  const db = getDB();
+  const provider = getAIProvider();
+  const folderDepth = db.getSetting('folderDepth') === '2' ? 2 : 1;
+  const topLevelFolderLimit = clampTopLevelFolderLimit(Number(db.getSetting('topLevelFolderLimit')));
+
+  const { items: bookmarks } = db.listBookmarks({ limit: 100000 });
+  const active = bookmarks.filter((b) => b.status !== 'deleted');
+
+  if (active.length === 0) {
+    return NextResponse.json(
+      { error: 'No bookmarks in library yet. Import some first.' },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const taxonomy = await generateTaxonomy(provider, active, { folderDepth, topLevelFolderLimit });
+    db.setSetting(SETTING_KEY, JSON.stringify(taxonomy));
+    return NextResponse.json({ taxonomy, folderPolicy: { folderDepth, topLevelFolderLimit } });
+  } catch (err) {
+    if (err instanceof MockProviderNotAllowedError) {
+      return NextResponse.json(
+        { error: err.message, code: 'mock_provider' },
+        { status: 400 }
+      );
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      { error: `Taxonomy generation failed: ${message}` },
+      { status: 500 }
+    );
+  }
+}

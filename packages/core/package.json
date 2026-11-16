@@ -1,0 +1,23 @@
+{
+  "name": "@bookmark-hub/core",
+  "version": "2026.9.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@bookmark-hub/shared": "*",
+    "@bookmark-hub/db": "*",
+    "@bookmark-hub/ai": "*"
+  }
+}

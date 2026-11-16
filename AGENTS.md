@@ -1,0 +1,42 @@
+# BookmarkHub Agent Notes
+
+## Project Shape
+
+BookmarkHub is a local-first TypeScript monorepo for turning browser bookmarks into searchable AI memory.
+
+- `packages/shared`: shared types and utility functions.
+- `packages/db`: SQLite schema and data access through `better-sqlite3`.
+- `packages/core`: bookmark import, parsing, search, duplicate detection, rescue suggestions, and browser bookmark detection.
+- `packages/ai`: mock, OpenAI-compatible, and Ollama-compatible AI providers.
+- `packages/indexer`: FTS indexing, summaries, tags, and embeddings.
+- `apps/cli`: `bookmark-hub` command-line interface.
+- `apps/mcp-server`: MCP stdio server for AI clients.
+- `apps/web`: Next.js local dashboard and API routes.
+- `apps/chrome-extension`: Chrome extension that talks to the local web API on port `4399`.
+
+## Commands
+
+- Runtime: use Node.js 22 or newer (`better-sqlite3` 13 requires Node.js 22+).
+- Install: `npm install`
+- Build non-web packages, CLI, and MCP server: `npm run build:packages`
+- Build everything: `npm run build`
+- Run the web dashboard: `npm run dev`
+- Run the CLI after building: `node apps/cli/dist/index.js`
+- Typecheck: `npm run typecheck`
+
+For smoke tests, point `BOOKMARK_HUB_HOME` at a temporary directory so they do not touch the user's real `~/.bookmark-hub` database. In PowerShell, for example: `$env:BOOKMARK_HUB_HOME = Join-Path $env:TEMP 'bookmark-hub-test'`. On POSIX shells, use a temporary path such as `/tmp/bookmark-hub-test`.
+
+## Current Caveats
+
+- The web app has its own rules in `apps/web/AGENTS.md`; read that file before editing anything under `apps/web`.
+- The root `typecheck` command can surface web/Next configuration issues. Do not assume package-level builds prove the web app is production-buildable.
+- The Chrome extension assumes the web app is running at `http://localhost:4399`.
+- AI calls must stay disabled unless a provider is explicitly configured; mock mode is the default.
+
+## Working Rules
+
+- Do not perform git actions unless the user explicitly asks.
+- Keep changes scoped to the requested area.
+- Prefer existing package boundaries over adding new cross-package shortcuts.
+- Treat local bookmark databases and browser profile files as user data; use temporary data directories for tests when possible.
+- When changing data writes, preserve the local-first behavior and avoid silent external network calls.
